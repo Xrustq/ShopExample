@@ -1,8 +1,8 @@
 package ru.example.ejb;
 
 import ru.example.domain.Order;
-import ru.example.domain.Thing;
-import ru.example.domain.ThingInOrder;
+import ru.example.domain.Product;
+import ru.example.domain.ProductInOrder;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -26,9 +26,9 @@ public class OrdersManagerBean {
         return order;
     }
 
-    public boolean addToOrder(long thingId, long orderId, int quantity) {
-        Thing thing = entityManager.find(Thing.class, thingId);
-        if (thing == null) {
+    public boolean addToOrder(long productId, long orderId, int quantity) {
+        Product product = entityManager.find(Product.class, productId);
+        if (product == null) {
             return false;
         }
 
@@ -37,12 +37,12 @@ public class OrdersManagerBean {
             return false;
         }
 
-        ThingInOrder thingInOrder = new ThingInOrder();
-        thingInOrder.setOrder(order);
-        thingInOrder.setThing(thing);
-        thingInOrder.setQuantity(quantity);
+        ProductInOrder productInOrder = new ProductInOrder();
+        productInOrder.setOrder(order);
+        productInOrder.setProduct(product);
+        productInOrder.setQuantity(quantity);
 
-        entityManager.persist(thingInOrder);
+        entityManager.persist(productInOrder);
 
         return true;
     }
@@ -52,17 +52,17 @@ public class OrdersManagerBean {
      * */
 
 
-    public List<Thing> getThingsInOrder(long orderId){
-        Order order = entityManager.find(Order.class,orderId);
+    public List<Product> getProductsInOrder(long orderId){
+        Order order = entityManager.find(Order.class, orderId);
         if(order == null){
             return Collections.emptyList();
         }
 
-        List<ThingInOrder> thingInOrders = order.getThingInOrders();
-        List<Thing>result = new ArrayList<>();
+        List<ProductInOrder> productInOrders = order.getProductInOrders();
+        List<Product> result = new ArrayList<>();
 
-        for(ThingInOrder thingInOrder : thingInOrders){
-            result.add(thingInOrder.getThing());
+        for(ProductInOrder productInOrder : productInOrders){
+            result.add(productInOrder.getProduct());
         }
 
         return result;

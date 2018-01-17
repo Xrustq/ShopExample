@@ -1,6 +1,7 @@
 package ru.example.auth;
 
 import org.apache.commons.lang3.StringUtils;
+import ru.example.auth.domain.ShopUser;
 import ru.example.auth.ejb.AuthenticationManger;
 
 import javax.ejb.EJB;
@@ -13,22 +14,23 @@ import java.io.Serializable;
 @Named
 @SessionScoped
 public class AuthBean implements Serializable {
-    private boolean loggedIn;
+
+    private ShopUser.Role role;
 
     private String login;
     private String password;
 
-    private String reqestedPage;
+    private String requestedPage;
 
     @EJB
     private AuthenticationManger authenticationManger;
 
-    public boolean isLoggedIn() {
-        return loggedIn;
+    public ShopUser.Role getRole() {
+        return role;
     }
 
-    public void setLoggedIn(boolean loggedIn) {
-        this.loggedIn = loggedIn;
+    public void setRole(ShopUser.Role role) {
+        this.role = role;
     }
 
     public String getLogin() {
@@ -47,26 +49,26 @@ public class AuthBean implements Serializable {
         this.password = password;
     }
 
-    public String getReqestedPage() {
-        return reqestedPage;
+    public String getRequestedPage() {
+        return requestedPage;
     }
 
-    public void setReqestedPage(String reqestedPage) {
-        this.reqestedPage = reqestedPage;
+    public void setRequestedPage(String requestedPage) {
+        this.requestedPage = requestedPage;
     }
 
     public void doLogin() {
         if ((StringUtils.isEmpty(login) || (StringUtils.isEmpty(password)))) {
-            loggedIn = false;
+            role = null;
             return;
         }
 
-        loggedIn = authenticationManger.loginAsUser(login, password);
+        role = authenticationManger.login(login, password);
 
 //      Производим редирект на страницу
-        if (loggedIn) {
+        if (role != null) {
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect(reqestedPage);
+                FacesContext.getCurrentInstance().getExternalContext().redirect(requestedPage);
             } catch (IOException e) {
                 e.printStackTrace();
             }

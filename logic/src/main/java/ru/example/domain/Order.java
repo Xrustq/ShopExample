@@ -11,8 +11,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToMany(mappedBy = "order")
-    private List<ThingInOrder>thingInOrders;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
+    private List<ProductInOrder> productInOrders;
 
     public long getId() {
         return id;
@@ -22,11 +22,11 @@ public class Order {
         this.id = id;
     }
 
-    public List<ThingInOrder> getThingInOrders() {
-        return thingInOrders;
+    public List<ProductInOrder> getProductInOrders() {
+        return productInOrders;
     }
 
-    public void setThingInOrders(List<ThingInOrder> thingInOrders) {
-        this.thingInOrders = thingInOrders;
+    public void setProductInOrders(List<ProductInOrder> productInOrders) {
+        this.productInOrders = productInOrders;
     }
 }

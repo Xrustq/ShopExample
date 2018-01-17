@@ -1,7 +1,6 @@
 package ru.example.auth.ejb;
 
 import org.apache.commons.lang3.StringUtils;
-import ru.example.auth.domain.Admin;
 import ru.example.auth.domain.Credentials;
 import ru.example.auth.domain.ShopUser;
 
@@ -18,51 +17,28 @@ public class AuthenticationManger {
     private EntityManager entityManager;
 
     /*
-    * Методы для авторизации
+    * Метод для авторизации
     * */
 
-    public boolean loginAsUser(String email, String password) {
+    public ShopUser.Role login(String email, String password) {
         if ((StringUtils.isEmpty(email)) || StringUtils.isEmpty(password)) {
-            return false;
+            return null;
         }
 
         Credentials credentials = entityManager.find(Credentials.class, email);
         if (credentials == null) {
-            return false;
+            return null;
         }
 
         if (!password.equals(credentials.getPassword())) {
-            return false;
+            return null;
         }
 
         ShopUser shopUser = credentials.getShopUser();
         if (shopUser == null) {
-            return false;
+            return null;
         }
 
-        return true;
+        return shopUser.getRole();
     }
-
-    public boolean loginAsAdmin(String email, String password) {
-        if ((StringUtils.isEmpty(email)) || StringUtils.isEmpty(password)) {
-            return false;
-        }
-
-        Credentials credentials = entityManager.find(Credentials.class, email);
-        if (credentials == null) {
-            return false;
-        }
-
-        if (!password.equals(credentials.getPassword())) {
-            return false;
-        }
-
-        Admin admin = credentials.getAdmin();
-        if (admin == null) {
-            return false;
-        }
-
-        return true;
-    }
-
 }
